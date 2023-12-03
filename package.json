@@ -1,0 +1,40 @@
+{
+  "name": "personalsiteapi",
+  "version": "1.0.0",
+  "description": "A comprehensive Node.js API for managing and serving content for a personal website, featuring endpoints for home, about, education, experience, portfolio, and contact pages.",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.ts",
+    "dev": "nodemon src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipesud/PersonalSiteAPI.git"
+  },
+  "author": "Felipe Belisario",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felipesud/PersonalSiteAPI/issues"
+  },
+  "homepage": "https://github.com/felipesud/PersonalSiteAPI#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.2",
+    "node": "^20.3.1",
+    "passport": "^0.6.0",
+    "passport-github2": "^0.1.12",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.0",
+    "validatorjs": "^3.22.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "typescript": "~5.1.6"
+  }
+}
