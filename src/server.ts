@@ -1,8 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PORT = parseInt(`${process.env.PORT || 8083}`);
+import constants from './utils/constants';
+const { DEFAULT_PORT } = constants;
 
 import app from './app';
 
-app.listen(PORT, () => console.log(`Server is running at ${PORT}. `));
+const PORT: number = parseInt(`${process.env.PORT || DEFAULT_PORT}`);
+
+app.listen(PORT, () => console.log(`Server is running at ${PORT}.`));
