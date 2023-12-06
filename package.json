@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/felipesud/PersonalSiteAPI#readme",
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.10.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

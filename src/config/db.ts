@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 import constants from '../utils/constants';
+import fs from 'fs';
 
 const { MONGODB_URI } = constants;
 
@@ -8,7 +9,10 @@ mongoose.connect(MONGODB_URI, {
   useUnifiedTopology: true,
   useFindAndModify: false,
   useCreateIndex: true,
-} as mongoose.ConnectOptions);
+  tls: true,
+  tlsCAFile: fs.readFileSync('/path/to/ca.pem').toString(),
+  tlsCertificateKeyFile: fs.readFileSync('/path/to/client.pem').toString(),
+} as ConnectOptions);
 
 const db = mongoose.connection;
 
