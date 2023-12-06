@@ -8,4 +8,4 @@ import app from './app';
 
 const PORT: number = parseInt(`${process.env.PORT || DEFAULT_PORT}`);
 
-app.listen(PORT, () => console.log(`Server is running at ${PORT}.`));
+app.listen(PORT, () => console.log(`Server is running `));
