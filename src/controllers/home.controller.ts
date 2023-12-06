@@ -14,7 +14,10 @@ const homeDataSchema = Joi.object({
     })).required()
 });
 
+
+//get home by id
 router.get('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
     const homeData = await homeRepository.getHome(req.params.id);
     if (homeData) {
         res.json(homeData);
@@ -23,12 +26,17 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// get all homes
 router.get('/', async (req, res) => {
+    //#swagger.tags=['Home']
     const allHomeData = await homeRepository.getHomes();
     res.json(allHomeData);
 });
 
+
+// add new home
 router.post('/', async (req, res) => {
+    //#swagger.tags=['Home']
     const { error } = homeDataSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -36,7 +44,9 @@ router.post('/', async (req, res) => {
     res.status(201).json(newHomeData);
 });
 
+// update home
 router.put('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
     const { error } = homeDataSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -48,7 +58,9 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// delete home
 router.delete('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
     const result = await homeRepository.deleteHome(req.params.id);
     if (result) {
         res.status(204).send();
