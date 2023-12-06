@@ -1,4 +1,4 @@
-const swaggerAutogen = require('swagger-autogen').default;
+import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
     info: {
@@ -12,4 +12,4 @@ const doc = {
 const outputFile = './swagger.json';
 const endpointsFiles = ['./routes/index.routes.ts'];
 
-swaggerAutogen(outputFile, endpointsFiles, doc);
+swaggerAutogen()(outputFile, endpointsFiles, doc);
