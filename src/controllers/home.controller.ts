@@ -1,62 +1,71 @@
-import { Request, Response, NextFunction } from 'express';
-import HomeService from '../services/home.service';
+import express from 'express';
+import Joi from 'joi';
+import homeRepository from 'src/repositories/home.repository';
 
-class HomeController {
-  constructor(private readonly homeService: HomeService) {}
+const router = express.Router();
 
-  async createHome(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const newHome = await this.homeService.createHome(req.body);
-      res.status(201).json(newHome);
-    } catch (error) {
-      next(error);
+const homeDataSchema = Joi.object({
+    _id: Joi.string().required(),
+    title: Joi.string().required(),
+    intro: Joi.string().required(),
+    services: Joi.array().items(Joi.object({
+        serviceType: Joi.string().required(),
+        description: Joi.string().required()
+    })).required()
+});
+
+
+//get home by id
+router.get('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
+    const homeData = await homeRepository.getHome(req.params.id);
+    if (homeData) {
+        res.json(homeData);
+    } else {
+        res.status(404).send('Home data not found');
     }
-  }
+});
 
-  async getAllHomes(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const homes = await this.homeService.getAllHomes();
-      res.json(homes);
-    } catch (error) {
-      next(error);
+// get all homes
+router.get('/', async (req, res) => {
+    //#swagger.tags=['Home']
+    const allHomeData = await homeRepository.getHomes();
+    res.json(allHomeData);
+});
+
+
+// add new home
+router.post('/', async (req, res) => {
+    //#swagger.tags=['Home']
+    const { error } = homeDataSchema.validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const newHomeData = await homeRepository.addHome(req.body);
+    res.status(201).json(newHomeData);
+});
+
+// update home
+router.put('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
+    const { error } = homeDataSchema.validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const updatedHomeData = await homeRepository.updateHome(req.params.id, req.body);
+    if (updatedHomeData) {
+        res.json(updatedHomeData);
+    } else {
+        res.status(404).send('Home data not found');
     }
-  }
+});
 
-  async getHomeById(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { id } = req.params;
-      const home = await this.homeService.getHomeById(id);
-      if (!home) {
-        res.status(404).json({ message: 'Home not found' });
-        return;
-      }
-      res.json(home);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async updateHome(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { id } = req.params;
-      const updatedHome = await this.homeService.updateHome(id, req.body);
-      if (!updatedHome) {
-        res.status(404).json({ message: 'Home not found' });
-        return;
-      }
-      res.json(updatedHome);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async deleteHome(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { id } = req.params;
-      await this.homeService.deleteHome(id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
+// delete home
+router.delete('/:id', async (req, res) => {
+    //#swagger.tags=['Home']
+    const result = await homeRepository.deleteHome(req.params.id);
+    if (result) {
+        res.status(204).send();
+    } else {
+        res.status(404).send('Home data not found');
     }
   }
 }

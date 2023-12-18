@@ -1,28 +1,51 @@
 import { IHome } from '../interfaces/IHome';
-import HomeRepository from '../repositories/home.repository';
+import homeRepository from '../repositories/home.repository';
 
 class HomeService {
-  constructor(private readonly homeRepository: HomeRepository) {}
-
-  async createHome(data: Partial<IHome>): Promise<IHome> {
-    return this.homeRepository.create(data);
+  async getHomeById(id: string): Promise<IHome | null> {
+    try {
+      const homeData = await homeRepository.getHome(id);
+      return homeData;
+    } catch (error) {
+      throw new Error(`Error while fetching home data: ${error}`);
+    }
   }
 
   async getAllHomes(): Promise<IHome[]> {
-    return this.homeRepository.findAll();
+    try {
+      const allHomeData = await homeRepository.getHomes();
+      return allHomeData;
+    } catch (error) {
+      throw new Error(`Error while fetching all home data: ${error}`);
+    }
   }
 
-  async getHomeById(id: string): Promise<IHome | null> {
-    return this.homeRepository.findById(id);
+  async createHome(home: IHome): Promise<IHome> {
+    try {
+      const newHomeData = await homeRepository.addHome(home);
+      return newHomeData;
+    } catch (error) {
+      throw new Error(`Error while creating new home data: ${error}`);
+    }
   }
 
-  async updateHome(id: string, data: Partial<IHome>): Promise<IHome | null> {
-    return this.homeRepository.update(id, data);
+  async updateHome(id: string, updatedHome: IHome): Promise<IHome | null> {
+    try {
+      const updatedHomeData = await homeRepository.updateHome(id, updatedHome);
+      return updatedHomeData;
+    } catch (error) {
+      throw new Error(`Error while updating home data: ${error}`);
+    }
   }
 
-  async deleteHome(id: string): Promise<void> {
-    await this.homeRepository.delete(id);
+  async deleteHome(id: string): Promise<boolean> {
+    try {
+      const result = await homeRepository.deleteHome(id);
+      return !!result;
+    } catch (error) {
+      throw new Error(`Error while deleting home data: ${error}`);
+    }
   }
 }
 
-export default HomeService;
+export default new HomeService();

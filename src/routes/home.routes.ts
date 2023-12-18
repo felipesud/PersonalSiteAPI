@@ -1,18 +1,78 @@
+import { Request, Response } from 'express';
+import homeService from "../services/home.service";
+import validation from "../middleware/validate"
 import express from 'express';
-import HomeController from '../controllers/home.controller';
-import HomeService from '../services/home.service';
-import HomeRepository from '../repositories/home.repository';
-import Home from '../models/Home';
 
 const router = express.Router();
-const homeRepository = new HomeRepository(Home);
-const homeService = new HomeService(homeRepository);
-const homeController = new HomeController(homeService);
 
-router.post('/', homeController.createHome.bind(homeController));
-router.get('/', homeController.getAllHomes.bind(homeController));
-router.get('/:id', homeController.getHomeById.bind(homeController));
-router.put('/:id', homeController.updateHome.bind(homeController));
-router.delete('/:id', homeController.deleteHome.bind(homeController));
+// get all homes
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const allHomeData = await homeService.getAllHomes();
+    res.json(allHomeData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// get home by id
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const homeId = req.params.id;
+    const homeData = await homeService.getHomeById(homeId);
+    if (homeData) {
+      res.json(homeData);
+    } else {
+      res.status(404).send('Home data not found');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// create new home
+router.post('/', validation.saveHome, async (req: Request, res: Response) => {
+  try {
+    const newHomeData = await homeService.createHome(req.body);
+    res.status(201).json(newHomeData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// update home
+router.put('/:id', validation.saveHome, async (req: Request, res: Response) => {
+  try {
+    const homeId = req.params.id;
+    const updatedHomeData = await homeService.updateHome(homeId, req.body);
+    if (updatedHomeData) {
+      res.json(updatedHomeData);
+    } else {
+      res.status(404).send('Home data not found');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// delete home
+router.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const homeId = req.params.id;
+    const result = await homeService.deleteHome(homeId);
+    if (result) {
+      res.status(204).send();
+    } else {
+      res.status(404).send('Home data not found');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 export default router;
